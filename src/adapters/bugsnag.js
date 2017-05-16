@@ -22,6 +22,7 @@ class Bugsnag {
     // that is why we use a seprate instance of a chain link instead of a loggerChain.bugsnagChailLink
     this.bugsnag = new BugsnagChainLink(settings);
     this.requestHandler = this.bugsnag.notifier ? this.bugsnag.notifier.requestHandler : undefined;
+    this.errorHandler = this.bugsnag.notifier ? this.bugsnag.notifier.errorHandler : undefined;
   }
 
   /**

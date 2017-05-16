@@ -7,7 +7,11 @@ module.exports = (config) => {
   }, config);
   return {
     class: BugsnagLink,
-    config: configs
+    config: configs,
+    adapter: {
+      name: 'notifier',
+      class: BugsnagAdapter
+    }
   };
 };
 module.exports.BugsnagChainLink = BugsnagLink;

@@ -10,7 +10,8 @@ describe('Bugsnag adapter ', () => {
     assert(notifier.settings);
     assert(notifier.bugsnag);
     assert(notifier.notify);
-    assert.notEqual(notifier.requestHandler, undefined);
+    assert.equal(typeof notifier.requestHandler, 'function');
+    assert.equal(typeof notifier.errorHandler, 'function');
   });
 
   it('should be initialized', () => {
@@ -20,6 +21,7 @@ describe('Bugsnag adapter ', () => {
     assert(notifier.bugsnag);
     assert(notifier.notify);
     assert.equal(notifier.requestHandler, undefined);
+    assert.equal(notifier.errorHandler, undefined);
   });
 
   it('should not break down when null is notified', () => {
