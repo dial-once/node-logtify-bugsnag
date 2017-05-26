@@ -1,7 +1,9 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const { chain } = require('logtify')();
-const BugsnagLink = require('../src/index').BugsnagChainLink;
+const Bugsnag = require('../src/index');
+const Message = require('./mocks/message');
+
+const BugsnagLink = Bugsnag.BugsnagChainLink;
 
 describe('Bugsnag chain link ', () => {
   before(() => {
@@ -18,6 +20,16 @@ describe('Bugsnag chain link ', () => {
     delete process.env.MIN_LOG_LEVEL;
     delete process.env.MIN_LOG_LEVEL_BUGSNAG;
     this.sandbox.restore();
+  });
+
+  it('should expose main parts', () => {
+    const setup = Bugsnag({ SOME_CONFIG: 'HelloWorld' });
+    assert.equal(typeof setup, 'object');
+    assert.equal(setup.config.SOME_CONFIG, 'HelloWorld');
+    assert(setup.class);
+    assert.equal(typeof setup.adapter, 'object');
+    assert(setup.adapter.class);
+    assert.equal(setup.adapter.name, 'notifier');
   });
 
   it('should not throw if no settings are given', () => {
@@ -88,7 +100,7 @@ describe('Bugsnag chain link ', () => {
   it('should notify message if BUGSNAG_LOGGING = true', () => {
     const bugsnag = new BugsnagLink({ BUGS_TOKEN: '00000000-0000-0000-0000-000000000000', BUGSNAG_LOGGING: true });
     const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
-    const message = new chain.Message('error', new Error('hello world'));
+    const message = new Message('error', new Error('hello world'));
     bugsnag.handle(message);
     assert(spy.called);
   });
@@ -96,7 +108,7 @@ describe('Bugsnag chain link ', () => {
   it('should not notify message if BUGSNAG_LOGGING = false', () => {
     const bugsnag = new BugsnagLink({ BUGS_TOKEN: '00000000-0000-0000-0000-000000000000', BUGSNAG_LOGGING: false });
     const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
-    const message = new chain.Message('error');
+    const message = new Message('error');
     bugsnag.handle(message);
     assert(!spy.called);
   });
@@ -109,7 +121,7 @@ describe('Bugsnag chain link ', () => {
     });
     const spy = this.sandbox.spy(bugsnag.notifier.notify);
     bugsnag.notifier.notify = spy;
-    const message = new chain.Message();
+    const message = new Message();
     bugsnag.handle(message);
     assert(!spy.called);
   });
@@ -121,7 +133,7 @@ describe('Bugsnag chain link ', () => {
     });
     const spy = this.sandbox.spy(bugsnag.notifier.notify);
     bugsnag.notifier.notify = spy;
-    const message = new chain.Message('error');
+    const message = new Message('error');
     bugsnag.handle(message);
     assert(spy.called);
   });
@@ -133,7 +145,7 @@ describe('Bugsnag chain link ', () => {
     });
     const spy = this.sandbox.spy(bugsnag.notifier.notify);
     bugsnag.notifier.notify = spy;
-    const message = new chain.Message(null, null, { notify: false });
+    const message = new Message(null, null, { notify: false });
     bugsnag.handle(message);
     assert(!spy.called);
   });

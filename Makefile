@@ -10,11 +10,6 @@ test:
 	make lint
 	make cover
 
-init:
-	sed -i 's/{service-name}/$(NAME)/g' package.json
-	sed -i 's/{service-name}/$(NAME)/g' README.md
-	sed -i 's/{service-name}/$(NAME)/g' sonar-project.properties
-
 cover:
 	node_modules/.bin/istanbul cover  node_modules/.bin/_mocha -- test --recursive --timeout=3000
 

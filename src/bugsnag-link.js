@@ -6,7 +6,6 @@ const bugsnag = require('bugsnag');
 
   Has the following configurations (either env var or settings param):
   - BUGSNAG_LOGGING {'true'|'false'} - switches on / off the use of this chain link
-  @see ChainLink @class for info on the log level priorities
   If a message's level is >= than a error - it will be notified. Otherwise - skipped
 
   Environment variables have a higher priority over a settings object parameters

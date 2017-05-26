@@ -1,7 +1,9 @@
 const Bugsnag = require('../../src/adapters/bugsnag');
-const { chain } = require('logtify')();
 const sinon = require('sinon');
 const assert = require('assert');
+const Message = require('../mocks/message');
+
+const chain = { Message };
 
 describe('Bugsnag adapter ', () => {
   it('should be initialized', () => {
