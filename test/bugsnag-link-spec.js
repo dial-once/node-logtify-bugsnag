@@ -1,8 +1,9 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Bugsnag = require('../src/index');
-const Message = require('./mocks/message');
+const { chain } = require('logtify')();
 
+const { Message } = chain;
 const BugsnagLink = Bugsnag.BugsnagChainLink;
 
 describe('Bugsnag chain link ', () => {
@@ -71,12 +72,12 @@ describe('Bugsnag chain link ', () => {
     bugsnag = new BugsnagLink({ BUGSNAG_LOGGING: false });
     assert.equal(bugsnag.isEnabled(), false);
     bugsnag = new BugsnagLink({});
-    assert.equal(bugsnag.isEnabled(), false);
+    assert.equal(bugsnag.isEnabled(), true);
   });
 
   it('should indicate if it is switched on/off [envs]', () => {
     const bugsnag = new BugsnagLink({});
-    assert.equal(bugsnag.isEnabled(), false);
+    assert.equal(bugsnag.isEnabled(), true);
     process.env.BUGSNAG_LOGGING = true;
     assert.equal(bugsnag.isEnabled(), true);
     process.env.BUGSNAG_LOGGING = false;

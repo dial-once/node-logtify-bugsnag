@@ -29,10 +29,10 @@ class Bugsnag {
     @function notify
     A function to fire a notify request to bugsnag api
     @param message {String|Object|Error} - an object to include into a notification
-    @param args {Object} - metadata to include into the notification
+    @param metadatas {Object} - metadata to include into the notification
   **/
-  notify(message, ...metadata) {
-    this.bugsnag.handle(new this.Message('error', message, ...metadata));
+  notify(message, ...metadatas) {
+    this.bugsnag.handle(new this.Message('error', message, ...metadatas));
   }
 }
 

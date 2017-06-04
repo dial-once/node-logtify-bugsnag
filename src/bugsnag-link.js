@@ -1,4 +1,5 @@
 const bugsnag = require('bugsnag');
+const { chain } = require('logtify')();
 /**
   @class BugsnagLink
   A Bugsnag notification chain link
@@ -6,18 +7,21 @@ const bugsnag = require('bugsnag');
 
   Has the following configurations (either env var or settings param):
   - BUGSNAG_LOGGING {'true'|'false'} - switches on / off the use of this chain link
+  - BUGSNAG_RELEASE_STAGES {string} - comma separated list of release stages
   If a message's level is >= than a error - it will be notified. Otherwise - skipped
 
   Environment variables have a higher priority over a settings object parameters
 **/
-class BugsnagLink {
+class BugsnagLink extends chain.ChainLink {
   /**
     @constructor
     Construct an instance of a BugsnagLink @class
     @param configs {Object} - LoggerChain configuration object
   **/
   constructor(configs) {
+    super();
     this.settings = configs || {};
+    this.name = 'BUGSNAG';
     if (this.settings.BUGS_TOKEN) {
       const notifyReleaseStages = process.env.BUGSNAG_RELEASE_STAGES ?
       process.env.BUGSNAG_RELEASE_STAGES.split(',') : this.settings.BUGSNAG_RELEASE_STAGES;
@@ -29,26 +33,6 @@ class BugsnagLink {
     } else {
       console.warn('Bugsnag logging was not initialized due to a missing token');
     }
-  }
-
-  /**
-    @function next
-    @param message {Object} - a message package object
-    Envoke the handle @function of the next chain link if provided
-  **/
-  next(message) {
-    if (this.nextLink) {
-      this.nextLink.handle(message);
-    }
-  }
-
-  /**
-    @function link
-    Links current chain link to a next chain link
-    @param nextLink {Object} - an optional next link for current chain link
-  **/
-  link(nextLink) {
-    this.nextLink = nextLink;
   }
 
   /**
@@ -68,8 +52,9 @@ class BugsnagLink {
     @return {boolean} - if this chain link is switched on / off
   **/
   isEnabled() {
-    return ['true', 'false'].includes(process.env.BUGSNAG_LOGGING) ?
-      process.env.BUGSNAG_LOGGING === 'true' : !!this.settings.BUGSNAG_LOGGING;
+    const result = ['true', 'false'].includes(process.env.BUGSNAG_LOGGING) ?
+      process.env.BUGSNAG_LOGGING === 'true' : this.settings.BUGSNAG_LOGGING;
+    return [null, undefined].includes(result) ? true : result;
   }
 
   /**
