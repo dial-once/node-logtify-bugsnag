@@ -1,11 +1,12 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Bugsnag = require('../src/index');
-const Message = require('./mocks/message');
+const { stream } = require('logtify')();
 
-const BugsnagLink = Bugsnag.BugsnagChainLink;
+const { Message } = stream;
+const BugsnagLink = Bugsnag.BugsnagSubscriber;
 
-describe('Bugsnag chain link ', () => {
+describe('Bugsnag subscriber ', () => {
   before(() => {
     delete process.env.BUGSNAG_LOGGING;
     delete process.env.MIN_LOG_LEVEL;
@@ -41,8 +42,6 @@ describe('Bugsnag chain link ', () => {
   it('should expose its main functions', () => {
     const bugsnag = new BugsnagLink({});
     assert(typeof bugsnag, 'object');
-    assert.equal(typeof bugsnag.next, 'function');
-    assert.equal(typeof bugsnag.link, 'function');
     assert.equal(typeof bugsnag.isReady, 'function');
     assert.equal(typeof bugsnag.isEnabled, 'function');
     assert.equal(typeof bugsnag.handle, 'function');
@@ -71,12 +70,12 @@ describe('Bugsnag chain link ', () => {
     bugsnag = new BugsnagLink({ BUGSNAG_LOGGING: false });
     assert.equal(bugsnag.isEnabled(), false);
     bugsnag = new BugsnagLink({});
-    assert.equal(bugsnag.isEnabled(), false);
+    assert.equal(bugsnag.isEnabled(), true);
   });
 
   it('should indicate if it is switched on/off [envs]', () => {
     const bugsnag = new BugsnagLink({});
-    assert.equal(bugsnag.isEnabled(), false);
+    assert.equal(bugsnag.isEnabled(), true);
     process.env.BUGSNAG_LOGGING = true;
     assert.equal(bugsnag.isEnabled(), true);
     process.env.BUGSNAG_LOGGING = false;
@@ -148,21 +147,5 @@ describe('Bugsnag chain link ', () => {
     const message = new Message(null, null, { notify: false });
     bugsnag.handle(message);
     assert(!spy.called);
-  });
-
-  it('should not throw if next link does not exist', () => {
-    const bugsnag = new BugsnagLink();
-    bugsnag.next();
-  });
-
-  it('should link a new chainLink', () => {
-    const bugsnag = new BugsnagLink();
-    const spy = sinon.spy(sinon.stub());
-    const mock = { handle: spy };
-    assert.equal(bugsnag.nextLink, null);
-    bugsnag.link(mock);
-    assert.equal(typeof bugsnag.nextLink, 'object');
-    bugsnag.next();
-    assert(spy.called);
   });
 });
