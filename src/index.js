@@ -1,20 +1,20 @@
 const BugsnagAdapter = require('./adapters/bugsnag');
-const BugsnagLink = require('./bugsnag-link');
+const BugsnagSubscriber = require('./bugsnag-link');
 const logtify = require('logtify');
 
-const chainBuffer = logtify.chainBuffer;
-const { chain } = logtify();
+const streamBuffer = logtify.streamBuffer;
+const { stream } = logtify();
 
 /**
-  @param config {object} - configuration for the chain link and adapter
-  @return {object} - chain link config with a class
+  @param config {object} - configuration for the subscriber and adapter
+  @return {object} - subscriber config with a class
 **/
 module.exports = (config) => {
   const configs = Object.assign({
     BUGS_TOKEN: process.env.BUGS_TOKEN || process.env.BUGSNAG_TOKEN
   }, config);
-  const chainLinkData = {
-    class: BugsnagLink,
+  const subscriberData = {
+    class: BugsnagSubscriber,
     config: configs,
     adapter: {
       name: 'notifier',
@@ -22,12 +22,12 @@ module.exports = (config) => {
     }
   };
 
-  chainBuffer.addChainLink(chainLinkData);
-  const mergedConfigs = Object.assign({}, configs, chain.settings);
-  chain.push(new BugsnagLink(mergedConfigs));
-  chain.bindAdapter('notifier', new BugsnagAdapter(chain, mergedConfigs));
+  streamBuffer.addSubscriber(subscriberData);
+  const mergedConfigs = Object.assign({}, configs, stream.settings);
+  stream.subscribe(new BugsnagSubscriber(mergedConfigs));
+  stream.bindAdapter('notifier', new BugsnagAdapter(stream, mergedConfigs));
 
-  return chainLinkData;
+  return subscriberData;
 };
-module.exports.BugsnagChainLink = BugsnagLink;
+module.exports.BugsnagSubscriber = BugsnagSubscriber;
 module.exports.BugsnagAdapter = BugsnagAdapter;

@@ -1,12 +1,12 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Bugsnag = require('../src/index');
-const { chain } = require('logtify')();
+const { stream } = require('logtify')();
 
-const { Message } = chain;
-const BugsnagLink = Bugsnag.BugsnagChainLink;
+const { Message } = stream;
+const BugsnagLink = Bugsnag.BugsnagSubscriber;
 
-describe('Bugsnag chain link ', () => {
+describe('Bugsnag subscriber ', () => {
   before(() => {
     delete process.env.BUGSNAG_LOGGING;
     delete process.env.MIN_LOG_LEVEL;
@@ -42,8 +42,6 @@ describe('Bugsnag chain link ', () => {
   it('should expose its main functions', () => {
     const bugsnag = new BugsnagLink({});
     assert(typeof bugsnag, 'object');
-    assert.equal(typeof bugsnag.next, 'function');
-    assert.equal(typeof bugsnag.link, 'function');
     assert.equal(typeof bugsnag.isReady, 'function');
     assert.equal(typeof bugsnag.isEnabled, 'function');
     assert.equal(typeof bugsnag.handle, 'function');
@@ -149,21 +147,5 @@ describe('Bugsnag chain link ', () => {
     const message = new Message(null, null, { notify: false });
     bugsnag.handle(message);
     assert(!spy.called);
-  });
-
-  it('should not throw if next link does not exist', () => {
-    const bugsnag = new BugsnagLink();
-    bugsnag.next();
-  });
-
-  it('should link a new chainLink', () => {
-    const bugsnag = new BugsnagLink();
-    const spy = sinon.spy(sinon.stub());
-    const mock = { handle: spy };
-    assert.equal(bugsnag.nextLink, null);
-    bugsnag.link(mock);
-    assert.equal(typeof bugsnag.nextLink, 'object');
-    bugsnag.next();
-    assert(spy.called);
   });
 });

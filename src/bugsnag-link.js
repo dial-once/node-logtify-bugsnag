@@ -1,22 +1,22 @@
 const bugsnag = require('bugsnag');
-const { chain } = require('logtify')();
+const { stream } = require('logtify')();
 /**
   @class BugsnagLink
-  A Bugsnag notification chain link
-  This chain link is responsible for firing a notification to the bugsnag endpoint
+  A Bugsnag notification subscriber
+  This subscriber is responsible for firing a notification to the bugsnag endpoint
 
   Has the following configurations (either env var or settings param):
-  - BUGSNAG_LOGGING {'true'|'false'} - switches on / off the use of this chain link
+  - BUGSNAG_LOGGING {'true'|'false'} - switches on / off the use of this subscriber
   - BUGSNAG_RELEASE_STAGES {string} - comma separated list of release stages
   If a message's level is >= than a error - it will be notified. Otherwise - skipped
 
   Environment variables have a higher priority over a settings object parameters
 **/
-class BugsnagLink extends chain.ChainLink {
+class BugsnagSubscriber extends stream.Subscriber {
   /**
     @constructor
     Construct an instance of a BugsnagLink @class
-    @param configs {Object} - LoggerChain configuration object
+    @param configs {Object} - LoggerStream configuration object
   **/
   constructor(configs) {
     super();
@@ -37,7 +37,7 @@ class BugsnagLink extends chain.ChainLink {
 
   /**
     @function isReady
-    Check if a chain link is configured properly and is ready to be used
+    Check if a subscriber is configured properly and is ready to be used
     @return {boolean}
   **/
   isReady() {
@@ -46,10 +46,10 @@ class BugsnagLink extends chain.ChainLink {
 
   /**
     @function isEnabled
-    Check if a chain link will be used
+    Check if a subscriber will be used
     Depends on configuration env variables / settings object parameters
     Checks BUGSNAG_LOGGING env / settings object param
-    @return {boolean} - if this chain link is switched on / off
+    @return {boolean} - if this subscriber is switched on / off
   **/
   isEnabled() {
     const result = ['true', 'false'].includes(process.env.BUGSNAG_LOGGING) ?
@@ -59,13 +59,10 @@ class BugsnagLink extends chain.ChainLink {
 
   /**
     @function handle
-    Process a message and notify it if the chain link is switched on and message's log level is >= than MIN_LOG_LEVEL
-    Finally, pass the message to the next chain link if any
+    Process a message and notify it if the subscriber is switched on and message's log level is >= than MIN_LOG_LEVEL
+    Finally, pass the message to the next subscriber if any
     @param message {Object} - message package object
-    @see LoggerChain message package object structure description
-
-    This function is NOT ALLOWED to modify the message
-    This function HAS to invoke the next() @function and pass the message further along the chain
+    @see LoggerStream message package object structure description
   **/
   handle(message) {
     const shouldBeUsed = this.isEnabled();
@@ -82,8 +79,7 @@ class BugsnagLink extends chain.ChainLink {
         }
       }
     }
-    this.next(message);
   }
 }
 
-module.exports = BugsnagLink;
+module.exports = BugsnagSubscriber;

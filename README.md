@@ -1,5 +1,5 @@
 # logtify-bugsnag
-Bugsnag execution chain link for [logtify](https://github.com/dial-once/node-logtify) logger
+Bugsnag execution subscriber for [logtify](https://github.com/dial-once/node-logtify) logger
 
 ## Installation
 ```
@@ -19,7 +19,7 @@ notifier.notify('Hello world!');
 
 __BEWARE!!__
 ```js
-// if required after chain link, adapter will be undefined
+// if required after subscriber, adapter will be undefined
 let { notifier } = require('logtify')();
 require('logtify-bugsnag')({ BUGS_TOKEN: 'YOUR_BUGSNAG_TOKEN' });
 // notifier is undefined
@@ -45,15 +45,15 @@ notifier.notify(new Error('Test error'));
 notifier.notify('Hello world!');
 ```
 
-The chainLink will make sure that a message will be sent to Bugsnag if:
+The subscriber will make sure that a message will be sent to Bugsnag if:
 * ``message.level === 'error'``
 * ``process.env.BUGSNAG_LOGGING !== 'true' || settings.BUGSNAG_LOGGING !== true``
 
 To set the message.level to be ``error``, make sure to use one of the following:
 ```js
-const { chain, logger } = require('logtify')();
+const { stream, logger } = require('logtify')();
 
-chain.log('error', new Error('Hello world'), { my: 'metadata' }); // error can also be passed as an arg
+stream.log('error', new Error('Hello world'), { my: 'metadata' }); // error can also be passed as an arg
 logger.log('error', 'Hello world', { my: 'metadata' }); // or a string
 logger.error('Hello world', { my: 'metadata'});
 ```
@@ -74,6 +74,6 @@ notifier.errorHandler;
 ```
 
 ## Configuration
-* ``process.env.BUGSNAG_LOGGING = 'true' || BUGSNAG_LOGGING: true`` - Switching on / off the chain link and adapter. On by default
+* ``process.env.BUGSNAG_LOGGING = 'true' || BUGSNAG_LOGGING: true`` - Switching on / off the subscriber and adapter. On by default
 * ``process.env.BUGS_TOKEN = 'TOKEN' || BUGS_TOKEN: 'TOKEN'`` - your Bugsnag token
 * ``process.env.BUGSNAG_RELEASE_STAGES = 'production,staging'`` - comma separated list of bugsnag release stages
