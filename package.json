@@ -1,8 +1,11 @@
 {
   "name": "logtify-bugsnag",
-  "version": "0.0.0",
+  "version": '1.0.0",
   "description": "Bugsnag link chain and adapter for logtify logger",
   "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "make test"
   },
@@ -15,5 +18,19 @@
   "bugs": {
     "url": "https://github.com/dial-once/node-logtify-bugsnag/issues"
   },
-  "homepage": "https://github.com/dial-once/node-logtify-bugsnag#readme"
+  "homepage": "https://github.com/dial-once/node-logtify-bugsnag#readme",
+  "dependencies": {
+    "bugsnag": "^1.10.0",
+    "logtify": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.16.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.6"
+  }
 }

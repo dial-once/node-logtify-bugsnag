@@ -1,0 +1,12 @@
+.git
+.DS_STORE
+node_modules
+coverage
+test
+.sonar
+.gitignore
+.jshintignore
+.jshintrc
+.npmignore
+Makefile
+sonar-project.properties
