@@ -77,3 +77,18 @@ notifier.errorHandler;
 * ``process.env.BUGSNAG_LOGGING = 'true' || BUGSNAG_LOGGING: true`` - Switching on / off the subscriber and adapter. On by default
 * ``process.env.BUGS_TOKEN = 'TOKEN' || BUGS_TOKEN: 'TOKEN'`` - your Bugsnag token
 * ``process.env.BUGSNAG_RELEASE_STAGES = 'production,staging'`` - comma separated list of bugsnag release stages
+
+**Settings**:
+Module can be configured by both env variables or config object. However, env variables have a higher priority.
+```js
+{
+  BUGSNAG_LOGGING: true|false,
+  BUGS_TOKEN: 'YOUR_BUGSNAG_TOKEN',
+  BUGSNAG_RELEASE_STAGES: ''
+  LOG_TIMESTAMP = 'true'
+  LOG_ENVIRONMENT = 'true'
+  LOG_LEVEL = 'true'
+  LOG_REQID = 'true' // only included when provided with metadata
+  LOG_CALLER_PREFIX = 'true' // additional prefix with info about caller module/project/function
+}
+```

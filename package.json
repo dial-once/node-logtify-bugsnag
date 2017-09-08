@@ -21,7 +21,8 @@
   "homepage": "https://github.com/dial-once/node-logtify-bugsnag#readme",
   "dependencies": {
     "bugsnag": "^1.10.0",
-    "logtify": "^1.0.0"
+    "deserialize-error": "0.0.3",
+    "logtify": ">=1.1.0"
   },
   "devDependencies": {
     "eslint": "^3.16.1",
