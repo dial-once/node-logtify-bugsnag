@@ -30,6 +30,7 @@ class BugsnagLink extends stream.Subscriber {
       process.env.BUGSNAG_RELEASE_STAGES.split(',') : this.settings.BUGSNAG_RELEASE_STAGES;
       bugsnag.register(this.settings.BUGS_TOKEN, {
         releaseStage: process.env.NODE_ENV || 'local',
+        appVersion: process.env.BUGSNAG_APP_VERSION || this.settings.BUGSNAG_APP_VERSION || '',
         notifyReleaseStages
       });
       this.notifier = bugsnag;
