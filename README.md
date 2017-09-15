@@ -82,9 +82,10 @@ notifier.errorHandler;
 Module can be configured by both env variables or config object. However, env variables have a higher priority.
 ```js
 {
-  BUGSNAG_LOGGING: true|false,
-  BUGS_TOKEN: 'YOUR_BUGSNAG_TOKEN',
+  BUGSNAG_LOGGING: true|false
+  BUGS_TOKEN: 'YOUR_BUGSNAG_TOKEN'
   BUGSNAG_RELEASE_STAGES: ''
+  BUGSNAG_APP_VERSION: '1.2.3'
   LOG_TIMESTAMP = 'true'
   LOG_ENVIRONMENT = 'true'
   LOG_LEVEL = 'true'
