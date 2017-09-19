@@ -22,11 +22,15 @@ class BugsnagLink extends stream.Subscriber {
     super();
     this.settings = configs || {};
     this.name = 'BUGSNAG';
+    if (this.settings.presets && this.settings.presets.includes('dial-once')) {
+      this.settings.BUGSNAG_RELEASE_STAGES = ['production', 'staging'];
+    }
     if (this.settings.BUGS_TOKEN) {
       const notifyReleaseStages = process.env.BUGSNAG_RELEASE_STAGES ?
       process.env.BUGSNAG_RELEASE_STAGES.split(',') : this.settings.BUGSNAG_RELEASE_STAGES;
       bugsnag.register(this.settings.BUGS_TOKEN, {
         releaseStage: process.env.NODE_ENV || 'local',
+        appVersion: process.env.BUGSNAG_APP_VERSION || this.settings.BUGSNAG_APP_VERSION || '',
         notifyReleaseStages
       });
       this.notifier = bugsnag;
@@ -63,22 +67,42 @@ class BugsnagLink extends stream.Subscriber {
     Finally, pass the message to the next stream link if any
     @param message {Object} - message package object
     @see LoggerStream message package object structure description
-
-    This function is NOT ALLOWED to modify the message
-    This function HAS to invoke the next() @function and pass the message further along the stream
   **/
   handle(message) {
     const shouldBeUsed = this.isEnabled();
     if (this.isReady() && shouldBeUsed && message) {
       const content = message.payload;
+      // true by default, unless switched off / provided some boolean
       const notify = (typeof content.meta.notify === 'boolean') ? content.meta.notify : shouldBeUsed;
       if (content.level === 'error' && notify) {
-        if (content.meta.stack !== undefined) {
-          const error = new Error(content.text);
-          error.stack = content.meta.stack;
+        let error = content.meta.error;
+        // if message main message is not an error
+        if (!error) {
+          // look for one in metadata
+          for (const key of Object.keys(content.meta)) {
+            if (content.meta[key] instanceof Error) {
+              error = content.meta[key];
+              break;
+            }
+          }
+        }
+        const prefix = message.getPrefix(this.settings);
+        let prefixText = !prefix.isEmpty ?
+          `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+        // if prefix contains these props, then caller module prefix was configured by settings/env
+        if ({}.hasOwnProperty.call(prefix, 'module') &&
+            {}.hasOwnProperty.call(prefix, 'function') &&
+            {}.hasOwnProperty.call(prefix, 'project')) {
+          prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
+        }
+        // if error found
+        if (error) {
+          error.message = `${prefixText}${error.message}`;
           this.notifier.notify(error, { user: content.meta });
         } else {
-          this.notifier.notify(content.text, { user: content.meta });
+          // if just some messate to notify
+          const messageText = `${prefixText}${content.text}`;
+          this.notifier.notify(messageText, { user: content.meta });
         }
       }
     }
