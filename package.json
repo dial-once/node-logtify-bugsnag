@@ -1,6 +1,6 @@
 {
   "name": "logtify-bugsnag",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Bugsnag link chain and adapter for logtify logger",
   "main": "src/index.js",
   "directories": {
