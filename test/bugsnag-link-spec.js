@@ -23,6 +23,11 @@ describe('Bugsnag subscriber ', () => {
     this.sandbox.restore();
   });
 
+  it('should set notify release stages on dial-once preset', () => {
+    const bugsnagLink = new BugsnagLink({ BUGS_TOKEN: '00000000-0000-0000-0000-000000000000', presets: ['dial-once'] });
+    assert.deepEqual(bugsnagLink.settings.BUGSNAG_RELEASE_STAGES, ['production', 'staging']);
+  });
+
   it('should expose main parts', () => {
     const setup = Bugsnag({ SOME_CONFIG: 'HelloWorld' });
     assert.equal(typeof setup, 'object');
@@ -118,8 +123,7 @@ describe('Bugsnag subscriber ', () => {
       BUGSNAG_LOGGING: true,
       MIN_LOG_LEVEL: 'error'
     });
-    const spy = this.sandbox.spy(bugsnag.notifier.notify);
-    bugsnag.notifier.notify = spy;
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
     const message = new Message();
     bugsnag.handle(message);
     assert(!spy.called);
@@ -130,8 +134,7 @@ describe('Bugsnag subscriber ', () => {
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
       BUGSNAG_LOGGING: true
     });
-    const spy = this.sandbox.spy(bugsnag.notifier.notify);
-    bugsnag.notifier.notify = spy;
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
     const message = new Message('error');
     bugsnag.handle(message);
     assert(spy.called);
@@ -142,10 +145,108 @@ describe('Bugsnag subscriber ', () => {
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
       BUGSNAG_LOGGING: true
     });
-    const spy = this.sandbox.spy(bugsnag.notifier.notify);
-    bugsnag.notifier.notify = spy;
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
     const message = new Message(null, null, { notify: false });
     bugsnag.handle(message);
     assert(!spy.called);
+  });
+
+  it('should be able to notify raw error', () => {
+    const bugsnag = new BugsnagLink({
+      BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
+      BUGSNAG_LOGGING: true
+    });
+
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
+    const error = new Error('Hello world');
+    const message = new Message('error', error);
+    bugsnag.handle(message);
+
+    const prefix = message.getPrefix(message.settings);
+    let prefixText = !prefix.isEmpty ?
+      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    // if prefix contains these props, then caller module prefix was configured by settings/env
+    if ({}.hasOwnProperty.call(prefix, 'module') &&
+      {}.hasOwnProperty.call(prefix, 'function') &&
+      {}.hasOwnProperty.call(prefix, 'project')) {
+      prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
+    }
+    error.message = `${prefixText}${error.message}`;
+    assert(spy.called);
+    assert(spy.calledWith(error));
+  });
+
+  it('should be able to notify error in metadata by default key "error"', () => {
+    const bugsnag = new BugsnagLink({
+      BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
+      BUGSNAG_LOGGING: true
+    });
+
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
+    const error = new Error('Hello world');
+    const message = new Message('error', 'Hello world', { error });
+    bugsnag.handle(message);
+
+    const prefix = message.getPrefix(message.settings);
+    let prefixText = !prefix.isEmpty ?
+      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    // if prefix contains these props, then caller module prefix was configured by settings/env
+    if ({}.hasOwnProperty.call(prefix, 'module') &&
+      {}.hasOwnProperty.call(prefix, 'function') &&
+      {}.hasOwnProperty.call(prefix, 'project')) {
+      prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
+    }
+
+    error.message = `${prefixText}${error.message}`;
+    assert(spy.called);
+    assert(spy.calledWith(error));
+  });
+
+  it('should be able to notify error in metadata by custom key', () => {
+    const bugsnag = new BugsnagLink({
+      BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
+      BUGSNAG_LOGGING: true
+    });
+
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
+    const error = new Error('Hello world');
+    const message = new Message('error', 'Hello world', { something: error });
+    bugsnag.handle(message);
+
+    const prefix = message.getPrefix(message.settings);
+    let prefixText = !prefix.isEmpty ?
+      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    // if prefix contains these props, then caller module prefix was configured by settings/env
+    if ({}.hasOwnProperty.call(prefix, 'module') &&
+      {}.hasOwnProperty.call(prefix, 'function') &&
+      {}.hasOwnProperty.call(prefix, 'project')) {
+      prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
+    }
+    error.message = `${prefixText}${error.message}`;
+    assert(spy.called);
+    assert(spy.calledWith(error));
+  });
+
+  it('should be able to notify message', () => {
+    const bugsnag = new BugsnagLink({
+      BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
+      BUGSNAG_LOGGING: true
+    });
+
+    const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
+    const message = new Message('error', 'Hello world');
+    bugsnag.handle(message);
+
+    const prefix = message.getPrefix(message.settings);
+    let prefixText = !prefix.isEmpty ?
+      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    // if prefix contains these props, then caller module prefix was configured by settings/env
+    if ({}.hasOwnProperty.call(prefix, 'module') &&
+      {}.hasOwnProperty.call(prefix, 'function') &&
+      {}.hasOwnProperty.call(prefix, 'project')) {
+      prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
+    }
+    assert(spy.called);
+    assert(spy.calledWith(`${prefixText}Hello world`));
   });
 });
