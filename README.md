@@ -1,4 +1,11 @@
 # logtify-bugsnag
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/gate?key=node-logtify-bugsnag)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=ncloc)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=coverage)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=code_smells)](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=coverage)
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=bugs)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
+[![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=sqale_debt_ratio)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
+
 Bugsnag execution subscriber for [logtify](https://github.com/dial-once/node-logtify) logger
 
 ## Installation
