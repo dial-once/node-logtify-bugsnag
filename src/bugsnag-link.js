@@ -1,4 +1,5 @@
 const bugsnag = require('bugsnag');
+const cloneError = require('utils-copy-error');
 const { stream } = require('logtify')();
 /**
   @class BugsnagLink
@@ -97,10 +98,11 @@ class BugsnagLink extends stream.Subscriber {
         }
         // if error found
         if (error) {
+          error = cloneError(error);
           error.message = `${prefixText}${error.message}`;
           this.notifier.notify(error, { user: content.meta });
         } else {
-          // if just some messate to notify
+          // if just some message to notify
           const messageText = `${prefixText}${content.text}`;
           this.notifier.notify(messageText, { user: content.meta });
         }

@@ -1,5 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
+const cloneError = require('utils-copy-error');
 const Bugsnag = require('../src/index');
 const { stream } = require('logtify')();
 
@@ -151,7 +152,7 @@ describe('Bugsnag subscriber ', () => {
     assert(!spy.called);
   });
 
-  it('should be able to notify raw error', () => {
+  it('should be able to notify raw error without modifications of the error object', () => {
     const bugsnag = new BugsnagLink({
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
       BUGSNAG_LOGGING: true
@@ -162,7 +163,7 @@ describe('Bugsnag subscriber ', () => {
     const message = new Message('error', error);
     bugsnag.handle(message);
 
-    const prefix = message.getPrefix(message.settings);
+    const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
     let prefixText = !prefix.isEmpty ?
       `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
@@ -171,12 +172,14 @@ describe('Bugsnag subscriber ', () => {
       {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
-    error.message = `${prefixText}${error.message}`;
+    assert.equal(error.message, 'Hello world');
+    const errorClone = cloneError(error);
+    errorClone.message = `${prefixText}${error.message}`;
     assert(spy.called);
-    assert(spy.calledWith(error));
+    assert(spy.calledWith(errorClone));
   });
 
-  it('should be able to notify error in metadata by default key "error"', () => {
+  it('should be able to notify error in metadata by default key "error" not modifying it', () => {
     const bugsnag = new BugsnagLink({
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
       BUGSNAG_LOGGING: true
@@ -187,7 +190,7 @@ describe('Bugsnag subscriber ', () => {
     const message = new Message('error', 'Hello world', { error });
     bugsnag.handle(message);
 
-    const prefix = message.getPrefix(message.settings);
+    const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
     let prefixText = !prefix.isEmpty ?
       `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
@@ -196,13 +199,14 @@ describe('Bugsnag subscriber ', () => {
       {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
-
-    error.message = `${prefixText}${error.message}`;
+    assert.equal(error.message, 'Hello world');
+    const errorClone = cloneError(error);
+    errorClone.message = `${prefixText}${error.message}`;
     assert(spy.called);
-    assert(spy.calledWith(error));
+    assert(spy.calledWith(errorClone));
   });
 
-  it('should be able to notify error in metadata by custom key', () => {
+  it('should be able to notify error in metadata by custom key without modifications of the error object', () => {
     const bugsnag = new BugsnagLink({
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
       BUGSNAG_LOGGING: true
@@ -213,7 +217,7 @@ describe('Bugsnag subscriber ', () => {
     const message = new Message('error', 'Hello world', { something: error });
     bugsnag.handle(message);
 
-    const prefix = message.getPrefix(message.settings);
+    const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
     let prefixText = !prefix.isEmpty ?
       `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
@@ -222,22 +226,25 @@ describe('Bugsnag subscriber ', () => {
       {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
-    error.message = `${prefixText}${error.message}`;
+    assert.equal(error.message, 'Hello world');
+    const errorClone = cloneError(error);
+    errorClone.message = `${prefixText}${error.message}`;
     assert(spy.called);
-    assert(spy.calledWith(error));
+    assert(spy.calledWith(errorClone));
   });
 
   it('should be able to notify message', () => {
     const bugsnag = new BugsnagLink({
       BUGS_TOKEN: '00000000-0000-0000-0000-000000000000',
-      BUGSNAG_LOGGING: true
+      BUGSNAG_LOGGING: true,
+      LOG_ENVIRONMENT: true
     });
 
     const spy = this.sandbox.spy(bugsnag.notifier, 'notify');
     const message = new Message('error', 'Hello world');
     bugsnag.handle(message);
 
-    const prefix = message.getPrefix(message.settings);
+    const prefix = message.getPrefix({ LOG_ENVIRONMENT: true });
     let prefixText = !prefix.isEmpty ?
       `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
