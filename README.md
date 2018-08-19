@@ -1,4 +1,5 @@
 # logtify-bugsnag
+
 [![Sonar](http://proxy.dialonce.net/sonar/api/badges/gate?key=node-logtify-bugsnag)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
 [![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=ncloc)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
 [![Sonar](http://proxy.dialonce.net/sonar/api/badges/measure?key=node-logtify-bugsnag&metric=coverage)](http://sonar.dialonce.net/dashboard?id=node-logtify-bugsnag)
