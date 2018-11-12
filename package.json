@@ -6,7 +6,7 @@
   "directories": {
     "start": "node src/index.js",
     "lint": "node_modules/.bin/eslint .",
-    "cover": "node_modules/.bin/istanbul cover  node_modules/.bin/_mocha -- test --recursive --timeout=3000",
+    "cover": "CONSOLE_LOGGING=false ./node_modules/.bin/nyc --reporter=lcov node_modules/.bin/_mocha -- test --recursive --timeout=3000",
     "test": "npm run lint && npm run cover"
   },
   "scripts": {
@@ -34,7 +34,7 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
-    "istanbul": "^0.4.5",
+    "nyc": "^13.0.1",
     "mocha": "^5.2.0",
     "sinon": "^1.17.6"
   }
