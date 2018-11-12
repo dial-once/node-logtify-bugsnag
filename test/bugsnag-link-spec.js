@@ -1,8 +1,8 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const cloneError = require('utils-copy-error');
-const Bugsnag = require('../src/index');
 const { stream } = require('logtify')();
+const Bugsnag = require('../src/index');
 
 const { Message } = stream;
 const BugsnagLink = Bugsnag.BugsnagSubscriber;
@@ -164,12 +164,12 @@ describe('Bugsnag subscriber ', () => {
     bugsnag.handle(message);
 
     const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
-    let prefixText = !prefix.isEmpty ?
-      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    let prefixText = !prefix.isEmpty
+      ? `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
-    if ({}.hasOwnProperty.call(prefix, 'module') &&
-      {}.hasOwnProperty.call(prefix, 'function') &&
-      {}.hasOwnProperty.call(prefix, 'project')) {
+    if ({}.hasOwnProperty.call(prefix, 'module')
+      && {}.hasOwnProperty.call(prefix, 'function')
+      && {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
     assert.equal(error.message, 'Hello world');
@@ -191,12 +191,12 @@ describe('Bugsnag subscriber ', () => {
     bugsnag.handle(message);
 
     const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
-    let prefixText = !prefix.isEmpty ?
-      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    let prefixText = !prefix.isEmpty
+      ? `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
-    if ({}.hasOwnProperty.call(prefix, 'module') &&
-      {}.hasOwnProperty.call(prefix, 'function') &&
-      {}.hasOwnProperty.call(prefix, 'project')) {
+    if ({}.hasOwnProperty.call(prefix, 'module')
+      && {}.hasOwnProperty.call(prefix, 'function')
+      && {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
     assert.equal(error.message, 'Hello world');
@@ -218,12 +218,12 @@ describe('Bugsnag subscriber ', () => {
     bugsnag.handle(message);
 
     const prefix = message.getPrefix({ LOG_TIMESTAMP: true });
-    let prefixText = !prefix.isEmpty ?
-      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    let prefixText = !prefix.isEmpty
+      ? `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
-    if ({}.hasOwnProperty.call(prefix, 'module') &&
-      {}.hasOwnProperty.call(prefix, 'function') &&
-      {}.hasOwnProperty.call(prefix, 'project')) {
+    if ({}.hasOwnProperty.call(prefix, 'module')
+      && {}.hasOwnProperty.call(prefix, 'function')
+      && {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
     assert.equal(error.message, 'Hello world');
@@ -245,12 +245,12 @@ describe('Bugsnag subscriber ', () => {
     bugsnag.handle(message);
 
     const prefix = message.getPrefix({ LOG_ENVIRONMENT: true });
-    let prefixText = !prefix.isEmpty ?
-      `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
+    let prefixText = !prefix.isEmpty
+      ? `[${prefix.timestamp}${prefix.environment}${prefix.logLevel}${prefix.reqId}] ` : '';
     // if prefix contains these props, then caller module prefix was configured by settings/env
-    if ({}.hasOwnProperty.call(prefix, 'module') &&
-      {}.hasOwnProperty.call(prefix, 'function') &&
-      {}.hasOwnProperty.call(prefix, 'project')) {
+    if ({}.hasOwnProperty.call(prefix, 'module')
+      && {}.hasOwnProperty.call(prefix, 'function')
+      && {}.hasOwnProperty.call(prefix, 'project')) {
       prefixText += `[${prefix.project}${prefix.module}${prefix.function}] `;
     }
     assert(spy.called);

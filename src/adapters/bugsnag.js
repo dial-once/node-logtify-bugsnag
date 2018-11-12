@@ -6,14 +6,14 @@ const BugsnagStreamLink = require('../bugsnag-link');
   Adapter for the bugsnag subscriber.
   Exposes the notify function as if a standard bugsnag module was used
   @constructor consumes the instance of a LoggerStream @class
-**/
+* */
 class Bugsnag {
   /**
     @constructor
     Construct an instance of a bugsnag adapter
     @param stream {Object} - an instance of a @class LoggerStream
     @param settings {Object} - stream settings
-  **/
+  * */
   constructor(stream, settings) {
     assert(stream);
     this.settings = settings;
@@ -30,7 +30,7 @@ class Bugsnag {
     A function to fire a notify request to bugsnag api
     @param message {String|Object|Error} - an object to include into a notification
     @param metadatas {Object} - metadata to include into the notification
-  **/
+  * */
   notify(message, ...metadatas) {
     this.bugsnag.handle(new this.Message('error', message, ...metadatas));
   }

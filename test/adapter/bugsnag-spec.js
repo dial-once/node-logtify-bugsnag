@@ -1,7 +1,7 @@
-const Bugsnag = require('../../src/adapters/bugsnag');
 const sinon = require('sinon');
 const assert = require('assert');
 const { stream } = require('logtify')();
+const Bugsnag = require('../../src/adapters/bugsnag');
 
 describe('Bugsnag adapter ', () => {
   it('should be initialized', () => {
