@@ -4,7 +4,10 @@
   "description": "Bugsnag link chain and adapter for logtify logger",
   "main": "src/index.js",
   "directories": {
-    "test": "test"
+    "start": "node src/index.js",
+    "lint": "node_modules/.bin/eslint .",
+    "cover": "node_modules/.bin/istanbul cover  node_modules/.bin/_mocha -- test --recursive --timeout=3000",
+    "test": "npm run lint && npm run cover"
   },
   "scripts": {
     "test": "make test"
