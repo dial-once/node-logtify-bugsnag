@@ -23,14 +23,14 @@ jobs:
           - v1-dependencies-{{ .Branch }}
           - v1-dependencies # fallback to using the latest cache if no exact match is found
       - run:
-          name: Installing dependencies
+          name: Install dependencies
           command: make deps
       - save_cache:
           paths:
           - node_modules
           key: v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
-          name: Testing
+          name: Test project
           command: make test
       - persist_to_workspace:
           root: ~/node-logtify-bugsnag
@@ -41,11 +41,17 @@ jobs:
   sonarqube:
     docker:
         - image: circleci/openjdk:8-jdk-browsers
+                 # Sonar need OpenJDK 8 to run correctly
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: /tmp
+      - run:
+          name: Install node
+          command: |
+            sudo apt install curl
+            curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+            sudo apt install nodejs
       - run:
           name: Sonar analysis
           command: |
