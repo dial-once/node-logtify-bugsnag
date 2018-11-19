@@ -37,6 +37,7 @@ jobs:
           root: .
           paths:
             - coverage
+            - src
 
   sonarqube:
     docker:
@@ -55,7 +56,7 @@ jobs:
       - run:
           name: Sonar analysis
           command: |
-            mv /tmp/coverage .
+            mv /tmp/coverage /tmp/src .
             make sonar
 workflows:
   version: 2
