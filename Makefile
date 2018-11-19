@@ -23,7 +23,7 @@ sonar:
 ifdef CIRCLE_PULL_REQUEST
 	@sonar-scanner/bin/sonar-scanner -e -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${shell basename $(CIRCLE_PULL_REQUEST)} -Dsonar.github.repository=$(REPO_SLUG) -Dsonar.github.oauth=$(GITHUB_TOKEN) -Dsonar.login=$(SONAR_LOGIN) -Dsonar.password=$(SONAR_PASS) -Dsonar.host.url=$(SONAR_HOST_URL)
 endif
-ifeq ($(CIRCLE_BRANCH),develop)
+ifeq ($(CIRCLE_BRANCH),feature/migrate-circle-v1-to-v2)
 	@sonar-scanner/bin/sonar-scanner -e -Dsonar.analysis.mode=publish -Dsonar.host.url=$(SONAR_HOST_URL) -Dsonar.login=$(SONAR_LOGIN) -Dsonar.password=$(SONAR_PASS)
 endif
 	rm -rf sonar-scanner*
