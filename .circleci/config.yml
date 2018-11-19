@@ -56,9 +56,8 @@ jobs:
       - run:
           name: Sonar analysis
           command: |
-            pwd
-            # mv /tmp/coverage /tmp/src .
-            # make sonar
+            cp -R /tmp/coverage /tmp/src /home/circleci/project
+            make sonar
 workflows:
   version: 2
   build_and_test:
