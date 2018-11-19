@@ -56,8 +56,7 @@ jobs:
       - run:
           name: Sonar analysis
           command: |
-            cd /tmp
-            ls -la
+            pwd
             # mv /tmp/coverage /tmp/src .
             # make sonar
 workflows:
