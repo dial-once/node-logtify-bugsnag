@@ -1,14 +1,14 @@
+const logtify = require('logtify');
 const BugsnagAdapter = require('./adapters/bugsnag');
 const BugsnagLink = require('./bugsnag-link');
-const logtify = require('logtify');
 
-const streamBuffer = logtify.streamBuffer;
+const { streamBuffer } = logtify;
 const { stream } = logtify();
 
 /**
   @param config {object} - configuration for the stream link and adapter
   @return {object} - stream link config with a class
-**/
+* */
 module.exports = (config) => {
   const configs = Object.assign({
     BUGS_TOKEN: process.env.BUGS_TOKEN || process.env.BUGSNAG_TOKEN
